@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('battles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->comment('Nombre del partido');
-            $table->unsignedBigInteger('player1_id')->comment('Jugador 1');
-            $table->unsignedBigInteger('player2_id')->comment('Jugador 2');
-            $table->unsignedBigInteger('winner_id')->comment('Ganador del partido');
+            $table->unsignedBigInteger('player1_id')->nullable()->comment('Jugador 1');
+            $table->unsignedBigInteger('player2_id')->nullable()->comment('Jugador 2');
+            $table->unsignedBigInteger('winner_id')->nullable()->comment('Ganador del partido');
             $table->integer('status')->comment('(1) Esperando; (2) En Progreso; (3) Finalizado');
 
             $table->foreign("player1_id")

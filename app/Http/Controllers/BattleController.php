@@ -22,9 +22,29 @@ class BattleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function start(Request $request)
     {
-        //
+        $player_id = $request->player_id;
+
+        $battleByPlayer = Battle::whereIn('status',[1,2])
+        ->where('player1_id',$player_id)
+        ->orWhere(function($query) use ($player_id){
+            $query->where('player2_id',$player_id);
+         })
+        ->first();
+
+        if($battleByPlayer === null){
+            $this->store($request);
+        }else{
+            $battle_id = $battleByPlayer->id;
+            $this->update($request, $battle_id);
+        }
+
+        if($battleByPlayer != null){
+            throw new \Exception("Error al crear el partido");
+        }
+
+
     }
 
     /**
@@ -35,7 +55,22 @@ class BattleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd($request->all());
+        $battleByPlayer = Battle::where('player1_id',$request->player_id)->whereIn('status',[1,2])->first();
+
+        if($battleByPlayer != null){
+            throw new \Exception("Error al crear el partido");
+        }
+
+        $number = $last === null ? 1 : $last->id;
+        $battle = Battle::create([
+            'name' => 'Partido #'.$number,
+            'player1_id' => $request->player_id,
+            'status' => 1,
+        ]);
+
+        // Retornar respuesta
+        return response()->json(['battle' => $battle], 201);
     }
 
     /**
@@ -67,7 +102,7 @@ class BattleController extends Controller
      * @param  \App\Models\Battle  $Battle
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Battle $battle)
+    public function update(Request $request, $id)
     {
         //
     }

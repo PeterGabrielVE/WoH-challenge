@@ -21,10 +21,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('players','PlayerController');
 Route::resource('items','ItemController');
 Route::resource('itemPlayer','ItemPlayerController');
+Route::resource('battles','BattleController');
 Route::get('attacks', [AttackController::class, 'index']);
 
 
-Route::post('fight', 'FightController@start');
+Route::post('createBattle', 'BattleController@start');
 Route::get('fight/{id?}', 'FightController@show');
 
 
