@@ -11,5 +11,9 @@ class Player extends Model
 
     protected $table = 'players';
     protected $fillable = ['name', 'email', 'type', 'life','attack', 'defense'];
+
+    public function items() {
+    	return $this->belongsToMany('App\Models\Item');
+    }
     
 }
