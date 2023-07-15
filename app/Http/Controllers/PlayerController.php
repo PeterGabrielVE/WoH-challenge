@@ -2,10 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\PlayerRepository;
+use App\Factories\PlayerFactory;
+
 use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
+    protected $playerRepository;
+    protected $playerFactory;
+    
+    public function __construct(PlayerRepository $playerRepository, PlayerFactory $playerFactory)
+    {
+        $this->playerRepository = $playerRepository;
+        $this->playerFactory = $playerFactory;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -34,7 +45,22 @@ class PlayerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $player = $this->playerFactory->create($request->all());
+            $this->playerRepository->create($player->toArray());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Jugador '.$request->name.' creado correctamente',
+                'data' => $player
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+        
     }
 
     /**
