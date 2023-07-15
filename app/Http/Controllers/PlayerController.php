@@ -107,4 +107,25 @@ class PlayerController extends Controller
     {
         //
     }
+
+    public function storeItem(Request $request)
+    {
+        try {
+            dd($request->all());
+            $player = $this->playerFactory->createItemPlayer($request->all());
+            $this->playerRepository->createItemPlayer($player->toArray());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'El item fue equipado correctamente',
+                'data' => $player
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+        
+    }
 }
