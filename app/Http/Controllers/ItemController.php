@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Repositories\ItemRepository;
+use App\Factories\ItemFactory;
 
 class ItemController extends Controller
 {
@@ -11,6 +13,16 @@ class ItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     protected $itemRepository;
+     protected $itemFactory;
+     
+     public function __construct(ItemRepository $itemRepository, ItemFactory $itemFactory)
+     {
+         $this->itemRepository = $itemRepository;
+         $this->itemFactory = $itemFactory;
+     }
+
     public function index()
     {
         //
@@ -34,7 +46,21 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $item = $this->itemFactory->create($request->all());
+            $this->itemRepository->create($item->toArray());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Item '.$request->name.' creado correctamente',
+                'data' => $item
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     /**

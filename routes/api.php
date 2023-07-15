@@ -2,6 +2,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttackController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PlayerController;
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource('players',PlayerController::class);
-//Route::resource('items', 'ItemController');
+Route::resource('items',ItemController::class);
 Route::get('attacks', [AttackController::class, 'index']);
 
 
