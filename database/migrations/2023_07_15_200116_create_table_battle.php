@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('matchs', function (Blueprint $table) {
+        Schema::create('battles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->comment('Nombre del partido');
             $table->unsignedBigInteger('player1_id')->comment('Jugador 1');
@@ -50,6 +50,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('matchs');
+        Schema::dropIfExists('battles');
     }
 };
