@@ -26,6 +26,6 @@ Route::get('attacks', [AttackController::class, 'index']);
 
 
 Route::post('createBattle', 'BattleController@start');
-Route::get('fight/{id?}', 'FightController@show');
+Route::post('fight', 'BattleController@fight');
 
 
