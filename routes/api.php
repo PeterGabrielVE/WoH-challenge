@@ -1,7 +1,6 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AttackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +21,6 @@ Route::resource('players','PlayerController');
 Route::resource('items','ItemController');
 Route::resource('itemPlayer','ItemPlayerController');
 Route::resource('battles','BattleController');
-Route::get('attacks', [AttackController::class, 'index']);
 
 
 Route::post('createBattle', 'BattleController@start');
