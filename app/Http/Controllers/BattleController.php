@@ -170,6 +170,10 @@ class BattleController extends Controller
                 $vida = $player2->life - $pto_attack;
                 if($vida < 0){
                     $vida = 0;
+
+                    $battle->status = 3;
+                    $battle->winner_id = $player1->id;
+                    $battle->save();
                 }
 
                 $player2->life = $vida;
@@ -189,12 +193,17 @@ class BattleController extends Controller
                 $pto_attack = $ataqueJugador2 - $defensaJugador1;
                 if($pto_attack <= 0){
                     $pto_attack = 1;
+
                 }
-                
+
                 $vida = $player1->life - $pto_attack;
 
                 if($vida < 0){
                     $vida = 0;
+
+                    $battle->status = 3;
+                    $battle->winner_id = $player2->id;
+                    $battle->save();
                 }
 
                 $player1->life = $vida;
