@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\PlayerRepository;
 use App\Factories\PlayerFactory;
+use Illuminate\Support\Facades\Validator;
 
 use DB;
 use App\Models\User;
@@ -52,6 +53,21 @@ class PlayerController extends Controller
             $isAdmin = is_admin($request->user_id);
         
             if($isAdmin){
+
+                $validator = Validator::make($request->all(), [
+                    'email' => 'required|email|unique:players',
+                    'name' => 'required|string|max:50|unique:players',
+                    'type' => 'required|integer'
+                 ]);
+
+                 if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $validator->messages()
+                    ]);
+                } 
+
+
                 $player = $this->playerFactory->create($request->all());
                 $this->playerRepository->create($player->toArray());
 

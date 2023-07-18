@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 use App\Repositories\ItemRepository;
 use App\Factories\ItemFactory;
 
@@ -47,14 +49,38 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         try {
-            $item = $this->itemFactory->create($request->all());
-            $this->itemRepository->create($item->toArray());
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Item '.$request->name.' creado correctamente',
-                'data' => $item
-            ]);
+            $isAdmin = is_admin($request->user_id);
+        
+            if($isAdmin){
+
+                $validator = Validator::make($request->all(), [
+                    'name' => 'required|string|max:50|unique:items',
+                    'type' => 'required|integer'
+                 ]);
+
+                 if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $validator->messages()
+                    ]);
+                } 
+
+                $item = $this->itemFactory->create($request->all());
+                $this->itemRepository->create($item->toArray());
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Item '.$request->name.' creado correctamente',
+                    'data' => $item
+                ]);
+
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ocurrio un problema. Comuniquese con el administrador'
+                ]);
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
