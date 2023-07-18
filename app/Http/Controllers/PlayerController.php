@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\PlayerRepository;
 use App\Factories\PlayerFactory;
 
+use DB;
 use Illuminate\Http\Request;
 
 class PlayerController extends Controller
@@ -111,7 +112,6 @@ class PlayerController extends Controller
     public function storeItem(Request $request)
     {
         try {
-            dd($request->all());
             $player = $this->playerFactory->createItemPlayer($request->all());
             $this->playerRepository->createItemPlayer($player->toArray());
 
@@ -127,5 +127,19 @@ class PlayerController extends Controller
             ]);
         }
         
+    }
+
+    public function getPlayerUlti(){
+
+       $players = DB::table('historic')->where('attack_id',1)
+                    ->join('players','players.id','=','historic.player_id')
+                    ->join('battles','battles.id','=','historic.battle_id')
+                    ->where('players.life','>',0)
+                    ->where('players.lastAttack',1)
+                    ->where('battles.status',2)
+                    ->select('players.*')
+                    ->get();
+
+        return $players;
     }
 }

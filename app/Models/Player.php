@@ -10,7 +10,7 @@ class Player extends Model
     use HasFactory;
 
     protected $table = 'players';
-    protected $fillable = ['name', 'email', 'type', 'life','attack', 'defense'];
+    protected $fillable = ['name', 'email', 'type', 'life','attack', 'defense', 'lastAttack'];
 
     public function items() {
     	return $this->belongsToMany('App\Models\Item');

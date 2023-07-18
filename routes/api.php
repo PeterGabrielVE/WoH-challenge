@@ -22,8 +22,9 @@ Route::resource('items','ItemController');
 Route::resource('itemPlayer','ItemPlayerController');
 Route::resource('battles','BattleController');
 
-
 Route::post('createBattle', 'BattleController@start');
 Route::post('fight', 'BattleController@fight');
+
+Route::get('getPlayerUlti', 'PlayerController@getPlayerUlti');
 
 
