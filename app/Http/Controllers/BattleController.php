@@ -162,12 +162,22 @@ class BattleController extends Controller
         if($player1->getPuntosDeVida() > 0 && $player2->getPuntosDeVida() > 0) {
             // Jugador 1 ataca a Jugador 2
             if ($player1->id == $request->player_id) {
-                $vida = $ataqueJugador1 - $defensaJugador2;
+
+                $pto_attack = $ataqueJugador1 - $defensaJugador2;
+                if($pto_attack <= 0){
+                    $pto_attack = 1;
+                }
+                $vida = $player2->life - $pto_attack;
                 if($vida < 0){
                     $vida = 0;
+
+                    $battle->status = 3;
+                    $battle->winner_id = $player1->id;
+                    $battle->save();
                 }
 
-                $player2->life = $player2->life - $vida;
+                $player2->life = $vida;
+                $player2->lastAttack = $request->attack_id;
                 $player2->save();
 
                 DB::table('historic')->insert(
@@ -179,13 +189,25 @@ class BattleController extends Controller
     
             // Jugador 2 ataca a Jugador 1
             if ($player2->id == $request->player_id) {
-                $vida = $ataqueJugador2 - $defensaJugador1;
-                if($vida < 0){
-                    $vida = 0;
+              
+                $pto_attack = $ataqueJugador2 - $defensaJugador1;
+                if($pto_attack <= 0){
+                    $pto_attack = 1;
+
                 }
 
-                $vida = $player1->life - $vida;
-                $player1->life =  $player1->life - $vida;
+                $vida = $player1->life - $pto_attack;
+
+                if($vida < 0){
+                    $vida = 0;
+
+                    $battle->status = 3;
+                    $battle->winner_id = $player2->id;
+                    $battle->save();
+                }
+
+                $player1->life = $vida;
+                $player1->lastAttack = $request->attack_id;
                 $player1->save();
 
                 DB::table('historic')->insert(
@@ -195,7 +217,7 @@ class BattleController extends Controller
             }
         }
 
-        if ($player1->getPuntosDeVida() <= 0) {
+        if ($player1->getPuntosDeVida() <= $player2->getPuntosDeVida()) {
             return response()->json([
                 'ganador' => $player2->name,
                 'perdedor' => $player1->name

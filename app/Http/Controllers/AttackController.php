@@ -13,7 +13,7 @@ class AttackController extends Controller
      */
     public function index()
     {
-        return [200,3455];
+
     }
 
     /**

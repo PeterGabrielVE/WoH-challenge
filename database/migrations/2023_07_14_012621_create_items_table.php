@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('type')->comment('Tipo (0)Bota,(1)Armadura,(2)Arma');
             $table->integer('attack')->nullable()->comment('Cantidad de puntos de defensa');
             $table->integer('defense')->nullable()->comment('Cantidad de puntos de ataque');
+            $table->integer('lastAttack')->nullable()->comment('Ultimo ataque');
+
             $table->timestamps();
         });
     }
