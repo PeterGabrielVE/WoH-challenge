@@ -6,6 +6,7 @@ use App\Repositories\PlayerRepository;
 use App\Factories\PlayerFactory;
 
 use DB;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PlayerController extends Controller
@@ -129,17 +130,36 @@ class PlayerController extends Controller
         
     }
 
-    public function getPlayerUlti(){
+    public function getPlayerUlti(Request $request){
 
-       $players = DB::table('historic')->where('attack_id',1)
-                    ->join('players','players.id','=','historic.player_id')
-                    ->join('battles','battles.id','=','historic.battle_id')
-                    ->where('players.life','>',0)
-                    ->where('players.lastAttack',1)
-                    ->where('battles.status',2)
-                    ->select('players.*')
-                    ->get();
+       if($request->user_id){
+        $user = User::find($request->user_id);
+            if($user->roles()->first()->name === 'admin'){
 
-        return $players;
+                if($request->user_id && User::find($request->user_id) ){
+                    $players = DB::table('historic')->where('attack_id',1)
+                                ->join('players','players.id','=','historic.player_id')
+                                ->join('battles','battles.id','=','historic.battle_id')
+                                ->where('players.life','>',0)
+                                ->where('players.lastAttack',1)
+                                ->where('battles.status',2)
+                                ->select('players.name as name')
+                                ->get();
+
+                    if(count($players) == 0){
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'No hay jugadores'
+                        ]);
+                    }
+                    return response()->json([
+                        'success' => true,
+                        'data' => $players
+                    ]);
+                    return $players;
+
+                }
+            }
+       }
     }
 }
